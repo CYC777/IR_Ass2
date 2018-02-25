@@ -5,6 +5,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem.porter import *
 from collections import defaultdict
 import shelve
+import json
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -15,14 +16,15 @@ stemmer = PorterStemmer()
 
 
 class CorpusProcess:
-    def __init__(self, corpus):
-
+    def __init__(self):
+        self.readJson()
         dict_set = defaultdict(set)
         dict_list = defaultdict(list)
 
         db = shelve.open('shelveDict')
         stop_words = set(stopwords.words('english'))
         db['stopwords'] = stop_words
+        corpus = db['corpus']
         db.close()
         for movie_id in corpus.keys():
             # print "movie_id is " + movie_id
@@ -40,6 +42,49 @@ class CorpusProcess:
         db['dict_w_list'] = dict_list
 
         db.close()
+
+    def readJson(self):
+        json1_file = open('test_corpus.json')
+        json1_str = json1_file.read()
+        corpus= json.loads(json1_str)
+        db = shelve.open('shelveDict')
+        db['corpus'] = corpus
+        db.close()
+
+    def get_movie_data(self, doc_id):
+        """
+        Return data fields for a movie.
+        Your code should use the doc_id as the key to access the shelf entry for the movie doc_data.
+        You can decide which fields to display, but include at least title and text.
+        """
+        db = shelve.open("shelveDict")
+        corpus = db['corpus']
+        db.close()
+        return corpus[doc_id]
+
+    def get_movie_snippet(self, doc_id):
+        """
+        Return a snippet for the results page.
+        Needs to include a title and a short description.
+        Your snippet does not have to include any query terms, but you may want to think about implementing
+        that feature. Consider the effect of normalization of index terms (e.g., stemming), which will affect
+        the ease of matching query terms to words in the text.
+        """
+        db = shelve.open("shelveDict")
+        corpus = db['corpus']
+        db.close()
+
+        title = ""
+        text = ""
+        try:
+            title = corpus[doc_id]["title"]
+        except:
+            print "title failed"
+        try:
+            text = corpus[doc_id]["text"]
+        except:
+            print "text failed"
+        return (doc_id, title, text)
 
     def normalization(self, text):
         res = []

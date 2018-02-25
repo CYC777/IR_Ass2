@@ -19,11 +19,6 @@ def readJson():
     db.close()
 
 
-def dummy_search(query, corpus):
-    """Return a list of movie ids that match the query."""
-    dummy_res = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "10", "11"]
-    return dummy_res
-
 
 def dummy_movie_data(doc_id, corpus):
     """
@@ -44,8 +39,7 @@ def dummy_movie_snippet(doc_id, corpus):
         the ease of matching query terms to words in the text.
         """
         doc_id = str(doc_id)
-        print "doc_id is " + doc_id
-        print "line 49 len of corpus is =" + str(len(corpus))
+
         title = ""
         text = ""
         try:
@@ -59,6 +53,3 @@ def dummy_movie_snippet(doc_id, corpus):
         return (doc_id, title, text)
 
 
-
-# print "line 69 corpus len is " + str(len(corpus))
-# print corpus["10"]["text"][0]

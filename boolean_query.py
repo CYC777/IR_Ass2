@@ -9,30 +9,20 @@ To use the application within a browser, use the url:
    http://127.0.0.1:5000/
 """
 from flask import *
-from boolean_search import dummy_search, dummy_movie_data, dummy_movie_snippet, readJson
+# from boolean_search import dummy_search, dummy_movie_data, dummy_movie_snippet, readJson
 from boolean_index import CorpusProcess
 import shelve
 
 # Create an instance of the flask application within the appropriate namespace (__name__).
 # By default, the application will be listening for requests on port 5000.
 app = Flask(__name__)
-global corpus
 
-readJson()
-
-db = shelve.open("shelveDict")
-corpus = db['corpus']
-db.close()
-
-corpusproccess = CorpusProcess(corpus)
-
-
+corpusproccess = CorpusProcess()
 
 # Welcome page
 # Python decorators are used by flask to associate url routes to functions.
 @app.route("/")
 def query():
-    readJson()
     """For top level route ("/"), simply present a query page."""
     return render_template('query_page.html')
 
@@ -45,7 +35,6 @@ def results(page_num):
 
     # Stop words should be stored in persistent storage when building your index,
     # and loaded into your search engine application when the application is started.
-
 
     search_res = corpusproccess.search(query)
     movie_ids =  search_res[0]  # Get a list of movie doc_ids that satisfy the query.
@@ -64,7 +53,7 @@ def results(page_num):
         print "line 53: movie_ids len is " + str(len(movie_ids))
         movie_results = []
         for key in movie_ids:
-            movie_results.append(dummy_movie_snippet(key, corpus))
+            movie_results.append(corpusproccess.get_movie_snippet(key))
 
         # movie_results = map(dummy_movie_snippet, movie_ids, corpus)   # Get movie snippets: title, abstract, etc.
         return render_template('results_page.html', orig_query=query, results=movie_results, srpn=page_num,
@@ -75,11 +64,10 @@ def results(page_num):
 def movie_data(film_id):
     """Given the doc_id for a film, present the title and text (optionally structured fields as well)
     for the movie."""
-    data = dummy_movie_data(film_id, corpus)     #Get all of the info for a single movie
+    data = corpusproccess.get_movie_data(film_id)     #Get all of the info for a single movie
     return render_template('doc_data_page.html', data=data)
 
 # If this module is called in the main namespace, invoke app.run()
 if __name__ == "__main__":
-
     app.run()
 
