@@ -9,9 +9,8 @@ To use the application within a browser, use the url:
    http://127.0.0.1:5000/
 """
 from flask import *
-# from boolean_search import dummy_search, dummy_movie_data, dummy_movie_snippet, readJson
 from boolean_index import CorpusProcess
-import shelve
+
 
 # Create an instance of the flask application within the appropriate namespace (__name__).
 # By default, the application will be listening for requests on port 5000.

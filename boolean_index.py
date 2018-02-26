@@ -22,7 +22,7 @@ class CorpusProcess:
         dict_set = defaultdict(set)
         dict_list = defaultdict(list)
 
-        db = shelve.open('shelveDict')
+        db = shelve.open('shelveDict', writeback=False)
         stop_words = set(stopwords.words('english'))
         db['stopwords'] = stop_words
         corpus = db['corpus']
@@ -38,7 +38,7 @@ class CorpusProcess:
             tmplist.sort(self.my_comparator)
             dict_list[w] = tmplist
 
-        db = shelve.open('shelveDict')
+        db = shelve.open('shelveDict', writeback=False)
 
         db['dict_w_list'] = dict_list
 
@@ -48,7 +48,7 @@ class CorpusProcess:
         json1_file = open('test_corpus.json')
         json1_str = json1_file.read()
         corpus= json.loads(json1_str)
-        db = shelve.open('shelveDict')
+        db = shelve.open('shelveDict', writeback=False)
         db['corpus'] = corpus
         db.close()
 
@@ -58,7 +58,7 @@ class CorpusProcess:
         Your code should use the doc_id as the key to access the shelf entry for the movie doc_data.
         You can decide which fields to display, but include at least title and text.
         """
-        db = shelve.open("shelveDict")
+        db = shelve.open('shelveDict', writeback=False)
         corpus = db['corpus']
         db.close()
         return corpus[doc_id]
@@ -71,7 +71,7 @@ class CorpusProcess:
         that feature. Consider the effect of normalization of index terms (e.g., stemming), which will affect
         the ease of matching query terms to words in the text.
         """
-        db = shelve.open("shelveDict")
+        db = shelve.open("shelveDict", writeback=False)
         corpus = db['corpus']
         db.close()
 
@@ -90,7 +90,7 @@ class CorpusProcess:
     def normalization(self, text):
         res = []
         stpw_query = []
-        db = shelve.open('shelveDict')
+        db = shelve.open('shelveDict', writeback=False)
         stop_words = db['stopwords']
 
         word_tokens = word_tokenize(text)
@@ -116,7 +116,7 @@ class CorpusProcess:
         stpw_query = normalized_res[1]
         unknown_words = []
 
-        db = shelve.open('shelveDict')
+        db = shelve.open('shelveDict', writeback=False)
         dict_list = db['dict_w_list']
         i = 0
         while i < len(normalized_queries) and normalized_queries[i] not in dict_list:
@@ -143,10 +143,8 @@ class CorpusProcess:
         j = 0
         res = []
         while i < len(list1) and j < len(list2):
-
             num1 = int(list1[i])
             num2 = int(list2[j])
-
             if num1 < num2:
                 i += 1
             elif num1 > num2:
