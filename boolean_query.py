@@ -10,13 +10,16 @@ To use the application within a browser, use the url:
 """
 from flask import *
 from boolean_index import CorpusProcess
+import time
 
 
 # Create an instance of the flask application within the appropriate namespace (__name__).
 # By default, the application will be listening for requests on port 5000.
 app = Flask(__name__)
-
+start = time.clock()
 corpusproccess = CorpusProcess()
+elapsed = time.clock() - start
+print "Initialization time used:" + str(elapsed)
 
 # Welcome page
 # Python decorators are used by flask to associate url routes to functions.
@@ -68,5 +71,6 @@ def movie_data(film_id):
 
 # If this module is called in the main namespace, invoke app.run()
 if __name__ == "__main__":
+
     app.run()
 
